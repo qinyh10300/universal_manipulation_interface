@@ -6,7 +6,7 @@ import torch
 
 class FrankaInterface:
     def __init__(self):
-        self.robot = RobotInterface('localhost')
+        self.robot = RobotInterface(time_to_go_default=0.1)
 
     def get_ee_pose(self):
         data = self.robot.get_ee_pose()
@@ -42,6 +42,10 @@ class FrankaInterface:
 
     def terminate_current_policy(self):
         self.robot.terminate_current_policy()
+
+# if __name__ == "__main__":
+#     robot =  FrankaInterface() 
+#     print(robot.get_joint_positions())
 
 s = zerorpc.Server(FrankaInterface())
 s.bind("tcp://0.0.0.0:4242")
