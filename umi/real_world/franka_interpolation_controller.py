@@ -1,4 +1,10 @@
+import sys
 import os
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(ROOT_DIR)
+os.chdir(ROOT_DIR)
+
 import time
 import enum
 import multiprocessing as mp
@@ -34,7 +40,7 @@ tx_flange_tip = tx_flange_flangerot45 @ tx_flangerot45_flangerot90 @tx_flangerot
 tx_tip_flange = np.linalg.inv(tx_flange_tip)
 
 class FrankaInterface:
-    def __init__(self, ip='172.16.0.3', port=4242):
+    def __init__(self, ip='183.173.65.137', port=4242):
         self.server = zerorpc.Client(heartbeat=20)
         self.server.connect(f"tcp://{ip}:{port}")
 
@@ -50,6 +56,7 @@ class FrankaInterface:
         return np.array(self.server.get_joint_velocities())
 
     def move_to_joint_positions(self, positions: np.ndarray, time_to_go: float):
+        print(type(time_to_go), time_to_go, positions)
         self.server.move_to_joint_positions(positions.tolist(), time_to_go)
 
     def start_cartesian_impedance(self, Kx: np.ndarray, Kxd: np.ndarray):
@@ -375,3 +382,8 @@ class FrankaInterpolationController(mp.Process):
 
             if self.verbose:
                 print(f"[FrankaPositionalController] Disconnected from robot: {self.robot_ip}")
+
+
+if __name__ == "__main__":
+    robot = FrankaInterface(ip='183.173.65.137', port=4242)
+    print(robot.get_joint_positions())
