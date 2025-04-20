@@ -49,6 +49,10 @@ class FrankaInterface:
         tip_pose = mat_to_pose(pose_to_mat(flange_pose) @ tx_flange_tip)
         return tip_pose
     
+    def get_raw_ee_pos(self):
+        flange_pose = np.array(self.server.get_ee_pose())
+        return flange_pose
+    
     def get_joint_positions(self):
         return np.array(self.server.get_joint_positions())
     
@@ -56,7 +60,7 @@ class FrankaInterface:
         return np.array(self.server.get_joint_velocities())
 
     def move_to_joint_positions(self, positions: np.ndarray, time_to_go: float):
-        print(type(time_to_go), time_to_go, positions)
+        # print(type(time_to_go), time_to_go, positions)
         self.server.move_to_joint_positions(positions.tolist(), time_to_go)
 
     def start_cartesian_impedance(self, Kx: np.ndarray, Kxd: np.ndarray):
