@@ -17,12 +17,16 @@ class FrankaGripperInterface:
         state = self.server.get_state()
         return state
     
-    def goto(self, width=0.08, speed=0.05, force=10.0, blocking=False):
-        self.server.goto(width=width, speed=speed, force=force, blocking=blocking)
+    def set_pos(self, pos):
+        self.server.set_pos(pos=pos)
 
+    def set_speed(self, speed):
+        self.server.set_speed(speed=speed)
 
 if __name__ == "__main__":
-    robot = FrankaGripperInterface(ip='183.173.65.137', port=4241)
+    robot = FrankaGripperInterface(ip='183.173.67.70', port=4241)
     print(robot.get_state())
 
-    # robot.goto(width=0.08, speed=0.05, force=10.0, blocking=True)
+    robot.set_speed(speed=0.2)
+
+    robot.set_pos(pos=0.0)

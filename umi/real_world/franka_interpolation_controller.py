@@ -70,6 +70,7 @@ class FrankaInterface:
         )
     
     def update_desired_ee_pose(self, pose: np.ndarray):
+        # print(pose.tolist(), pose)
         self.server.update_desired_ee_pose(pose.tolist())
 
     def terminate_current_policy(self):

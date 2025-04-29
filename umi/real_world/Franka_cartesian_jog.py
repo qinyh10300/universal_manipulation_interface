@@ -32,6 +32,17 @@ if __name__ == "__main__":
     np.set_printoptions(precision=4, suppress=True)
     Franka = FrankaInterface(ip='183.173.65.137', port=4242)
 
+    Kx_scale = 1.0
+    Kxd_scale = 1.0
+    Kx = np.array([750.0, 750.0, 750.0, 15.0, 15.0, 15.0]) * Kx_scale
+    Kxd = np.array([37.0, 37.0, 37.0, 2.0, 2.0, 2.0]) * Kxd_scale
+
+    # start franka cartesian impedance policy
+    Franka.start_cartesian_impedance(
+        Kx=Kx,
+        Kxd=Kxd
+    )
+
     current_mode: str = "x"
 
     translation_step: float = 0.02
@@ -89,7 +100,7 @@ if __name__ == "__main__":
             pose_current_mat[:3,3] = xyz
 
             # 移动机械臂
-            Franka.move_to_joint_positions(mat_to_pose(pose_current_mat), time_to_go)
+            Franka.update_desired_ee_pose(mat_to_pose(pose_current_mat))
         else:
             askForCommand()
 
