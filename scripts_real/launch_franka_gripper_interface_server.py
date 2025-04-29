@@ -4,20 +4,47 @@ import scipy.spatial.transform as st
 import numpy as np
 import torch
 
+import franky
+
+
 class FrankaGripperInterface:
     def __init__(self):
-        self.robot = GripperInterface()
-
+        self.gripper = franky.Gripper("172.16.0.2")
+        self.speed = 0.02  # [m/s]
+        self.force = 20.0  # [N]
+        
     def get_state(self):
-        return self.robot.get_state()
+        print(f"111   {self.gripper.width}")
+        return self.gripper.width
     
-    def goto(self, width=0.08, speed=0.05, force=10.0, blocking=False):
-        self.robot.goto(width=width, speed=speed, force=force, blocking=blocking)
+    def move(self, pose):
+        # Move the fingers to a specific width (5cm)
+        return self.gripper.move(pose, self.speed)
+    
+    def grasp(self):
+        # Grasp an object of unknown width
+        return self.gripper.grasp(0.0, self.speed, self.force, epsilon_outer=1.0)
+
+    def open(self):
+        # Release the object
+        self.gripper.open(self.speed)
+    
 
 # if __name__ == "__main__":
 #     robot =  FrankaGripperInterface() 
-#     print(robot.get_joint_positions())
+#     print(robot.get_state())
 
 s = zerorpc.Server(FrankaGripperInterface())
 s.bind("tcp://0.0.0.0:4241")
 s.run()
+
+# from polymetis import GripperInterface
+
+# gripper = GripperInterface(
+#     ip_address="localhost",
+# )
+
+# # example usages
+# gripper_state = gripper.get_state()
+# gripper.goto(width=0.01, speed=0.05, force=0.1)
+# # gripper.grasp(speed=0.05, force=0.1)
